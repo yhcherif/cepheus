@@ -1,0 +1,103 @@
+# Cepheus Server Installation
+
+sudo sed -i "s/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/" /etc/gai.conf
+
+# Install Software update
+
+export DEBIAN_FRONTEND=noninteractive
+apt-get update && apt-get upgrade -y
+
+# Add A Few PPAs To Stay Current
+apt-get install -y --force-yes software-properties-common
+
+# apt-add-repository ppa:fkrull/deadsnakes-python2.7 -y
+apt-add-repository ppa:nginx/development -y
+apt-add-repository ppa:chris-lea/redis-server -y
+apt-add-repository ppa:ondrej/apache2 -y
+apt-add-repository ppa:ondrej/php -y
+
+# Configure Swap Disk
+
+if [ -f /swapfile ]; then
+    echo "Swap exists."
+else
+    fallocate -l 1G /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo "/swapfile none swap sw 0 0" >> /etc/fstab
+    echo "vm.swappiness=30" >> /etc/sysctl.conf
+    echo "vm.vfs_cache_pressure=50" >> /etc/sysctl.conf
+fi
+
+# Update Package Lists
+apt-get update
+
+# Setup Unattended Security Upgrades
+cat > /etc/apt/apt.conf.d/50unattended-upgrades << EOF
+Unattended-Upgrade::Allowed-Origins {
+    "Ubuntu xenial-security";
+};
+Unattended-Upgrade::Package-Blacklist {
+    //
+};
+EOF
+
+cat > /etc/apt/apt.conf.d/10periodic << EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
+
+# Base Packages
+
+apt-get install -y --force-yes build-essential curl fail2ban gcc libmcrypt4 libpcre3-dev \
+make python2.7 python-pip sendmail supervisor ufw unattended-upgrades unzip whois zsh \
+git-core zlib1g-dev libssl-dev libreadline-dev libyaml-dev \
+libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev \
+python-software-properties libffi-dev
+
+# Install Python Httpie
+
+pip install httpie
+
+# Set The Hostname If Necessary
+
+echo "{{SERVER_NAME}}" > /etc/hostname
+sed -i 's/127\.0\.0\.1.*localhost/127.0.0.1 {{SERVER_NAME}}.localdomain {{SERVER_NAME}} localhost/' /etc/hosts
+hostname {{SERVER_NAME}}
+
+
+# Set The Timezone
+
+# ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+# Create The Root SSH Directory If Necessary
+
+if [ ! -d /root/.ssh ]
+then
+    mkdir -p /root/.ssh
+    touch /root/.ssh/authorized_keys
+fi
+
+# Setup Cepheus User
+
+useradd cepheus
+mkdir -p /home/cepheus/.ssh
+mkdir -p /home/cepheus/.cepheus
+mkdir -p /root/.cepheus
+adduser cepheus sudo
+
+# Setup Bash For Cepheus User
+
+chsh -s /bin/bash cepheus
+cp /root/.profile /home/cepheus/.profile
+cp /root/.bashrc /home/cepheus/.bashrc
+
+# Set The Sudo Password For Cepheus
+
+PASSWORD=$(mkpasswd {{ROOT_PASSWORD}})
+usermod --password $PASSWORD cepheus
+

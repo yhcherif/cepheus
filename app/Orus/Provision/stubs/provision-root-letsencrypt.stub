@@ -1,0 +1,119 @@
+#
+# REQUIRES:
+#    - site (the forge site instance)
+#    - certificate (the forge certificate instance)
+#    - domains (the domain list)
+#    - env
+#
+
+# Initial Setup
+
+set -e
+
+TIME=$(date +%s)
+
+# Check if certificate is still valid for more than 5 days
+
+if [ -f /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.crt ] && openssl x509 -checkend 1209600 -noout -in /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.crt
+then
+echo "Certificate is still valid."
+exit 0
+fi
+
+# Create Well Known Directory
+
+echo "Creating challenge directory..."
+
+mkdir -p /home/forge/.letsencrypt
+echo "FORGE TEST FILE" > /home/forge/.letsencrypt/test
+chown -R forge /home/forge/.letsencrypt
+chgrp -R forge /home/forge/.letsencrypt
+
+mkdir -p /etc/nginx/ssl/beta.pinsdeal.ci/356885
+
+# Install setuptools
+
+echo "Installing Python setuptools..."
+
+pip install -U pip setuptools
+
+# Install Shell Client
+
+echo "Installing LetsEncrypt client..."
+
+if [ ! -d /root/letsencrypt$TIME ]; then
+cd /root
+git clone https://github.com/lukas2511/dehydrated letsencrypt$TIME
+fi
+
+cd /root/letsencrypt$TIME
+
+# Install Lexicon For Wildcards
+
+if [ -f private_key.pem ]; then
+rm private_key.pem
+fi
+
+# Build Domain File & Config File
+
+echo "Configuring client..."
+
+echo "beta.pinsdeal.ci > 15274807095b0b81855a6ed" > domains.txt
+
+cat > config << EOF
+CA="https://acme-v02.api.letsencrypt.org/directory"
+WELLKNOWN="/home/forge/.letsencrypt"
+EOF
+
+# Setup Well Known Location
+
+cat > /etc/nginx/forge-conf/beta.pinsdeal.ci/server/letsencrypt_challenge.conf << EOF
+location /.well-known/acme-challenge {
+alias /home/forge/.letsencrypt;
+}
+EOF
+
+# Restart Nginx
+
+echo "Restarting Nginx..."
+
+service nginx restart || true
+service nginx reload || true
+
+# Generate Certificate
+
+echo "Generating Certificate..."
+
+./dehydrated --register --accept-terms
+./dehydrated -c
+
+# Install The Certificate
+
+echo "Installing Certificate..."
+
+cp "certs/15274807095b0b81855a6ed/privkey.pem" /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.key
+cp "certs/15274807095b0b81855a6ed/fullchain.pem" /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.crt
+
+chmod 644 /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.key
+chmod 644 /etc/nginx/ssl/beta.pinsdeal.ci/356885/server.crt
+
+# Setup Well Known Location
+
+echo "Installing well known challenge configuration..."
+
+cat > /etc/nginx/forge-conf/beta.pinsdeal.ci/server/letsencrypt_challenge.conf << EOF
+location /.well-known/acme-challenge {
+auth_basic off;
+alias /home/forge/.letsencrypt;
+}
+EOF
+
+echo "Restarting Nginx..."
+
+service nginx restart || true
+service nginx reload || true
+nginx -s reload || true
+
+# Delete Library
+
+rm -rf /root/letsencrypt$TIME

@@ -1,0 +1,65 @@
+--2018-05-28 04:11:48--  https://forge-certificates.laravel.com/le/356885/547400?env=production
+Resolving forge-certificates.laravel.com (forge-certificates.laravel.com)... 104.25.9.32, 104.25.8.32, 2400:cb00:2048:1::6819:820, ...
+Connecting to forge-certificates.laravel.com (forge-certificates.laravel.com)|104.25.9.32|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘letsencrypt_script1527480708’
+
+     0K ..                                                     22.1M=0s
+
+2018-05-28 04:11:49 (22.1 MB/s) - ‘letsencrypt_script1527480708’ saved [2605]
+
+Creating challenge directory...
+Installing Python setuptools...
+Collecting pip
+  Downloading https://files.pythonhosted.org/packages/0f/74/ecd13431bcc456ed390b44c8a6e917c1820365cbebcb6a8974d1cd045ab4/pip-10.0.1-py2.py3-none-any.whl (1.3MB)
+Collecting setuptools
+  Downloading https://files.pythonhosted.org/packages/7f/e1/820d941153923aac1d49d7fc37e17b6e73bfbd2904959fffbad77900cf92/setuptools-39.2.0-py2.py3-none-any.whl (567kB)
+Installing collected packages: pip, setuptools
+  Found existing installation: pip 9.0.1
+    Not uninstalling pip at /usr/lib/python2.7/dist-packages, outside environment /usr
+  Found existing installation: setuptools 39.0.1
+    Not uninstalling setuptools at /usr/lib/python2.7/dist-packages, outside environment /usr
+Successfully installed pip-10.0.1 setuptools-39.2.0
+Installing LetsEncrypt client...
+Cloning into 'letsencrypt1527480709'...
+Configuring client...
+Restarting Nginx...
+Generating Certificate...
+# INFO: Using main config file /root/letsencrypt1527480709/config
++ Generating account key...
++ Registering account key with ACME server...
++ Done!
+# INFO: Using main config file /root/letsencrypt1527480709/config
+ + Creating chain cache directory /root/letsencrypt1527480709/chains
+Processing beta.pinsdeal.ci
+ + Creating new directory /root/letsencrypt1527480709/certs/15274807095b0b81855a6ed ...
+ + Signing domains...
+ + Generating private key...
+ + Generating signing request...
+ + Requesting new certificate order from CA...
+ + Received 1 authorizations URLs from the CA
+ + Handling authorization for beta.pinsdeal.ci
+ + 1 pending challenge(s)
+ + Deploying challenge tokens...
+ + Responding to challenge for beta.pinsdeal.ci authorization...
+ + Cleaning challenge tokens...
+ + Challenge validation has failed :(
+ERROR: Challenge is invalid! (returned: invalid) (result: {
+  "type": "http-01",
+  "status": "invalid",
+  "error": {
+    "type": "urn:ietf:params:acme:error:dns",
+    "detail": "DNS problem: NXDOMAIN looking up A for beta.pinsdeal.ci",
+    "status": 400
+  },
+  "url": "https://acme-v02.api.letsencrypt.org/acme/challenge/F1-wPUzHklfhQuCe4XFDYazNSJ14lN1YIUNTDuuISKM/4844643953",
+  "token": "0zXoVlJ2rhTtaqezcuZJ9gZ7vOqphIkNVErgN2rSHdY",
+  "validationRecord": [
+    {
+      "url": "http://beta.pinsdeal.ci/.well-known/acme-challenge/0zXoVlJ2rhTtaqezcuZJ9gZ7vOqphIkNVErgN2rSHdY",
+      "hostname": "beta.pinsdeal.ci",
+      "port": "80"
+    }
+  ]
+})

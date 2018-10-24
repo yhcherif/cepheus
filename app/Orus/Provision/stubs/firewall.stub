@@ -1,0 +1,6 @@
+# Setup UFW Firewall
+
+ufw allow {{SSH_PORT}}
+ufw allow 80
+ufw allow 443
+ufw --force enable

@@ -1,0 +1,4 @@
+rm: cannot remove '/etc/nginx/sites-available/test.pinsdeal.ci': No such file or directory
+rm: cannot remove '/etc/nginx/sites-available/www.test.pinsdeal.ci': No such file or directory
+rm: cannot remove '/etc/nginx/sites-enabled/test.pinsdeal.ci': No such file or directory
+rm: cannot remove '/etc/nginx/sites-enabled/www.test.pinsdeal.ci': No such file or directory

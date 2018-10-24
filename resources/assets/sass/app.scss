@@ -1,0 +1,74 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+
+@import url("https://use.fontawesome.com/releases/v5.0.13/css/all.css");
+
+@tailwind preflight;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+.animate-rotate{
+    animation: spin 4000ms infinite linear;
+}
+
+.gradient-primary-secondary{}
+a.link-reset{
+    color: inherit;
+    text-decoration: none;
+}
+.outline-none{
+    outline: none;
+}
+.placeholder::placeholder{
+    color: inherit;
+    opacity: 1;
+}
+
+::placeholder{
+    color: inherit;
+    opacity: 1;
+}
+
+.pin-t-head{
+    bottom: 100%;
+}
+
+.pin-b-tail{
+    top: 100%;
+}
+
+.pin-r-end{
+    left: 100%;
+}
+
+.pin-l-start{
+    right: 100%;
+}
+
+.words-break-all{
+    word-break: break-all;
+}
+
+// 'primary': '#35A4A8',
+//   'secondary': '#317EC6',
+//   'midnight': '#142649',
+//   'cerulean': '#126897',
+//   'pelorus': '#149AB5',
+//   'azure': '#FEFFFF',
+//   'grey-suit': '#8A889E',
+//   'bali-hai': '#8393A0',
+//   'grey-chateau': '#9098A2',
+//   'alice-blue': '#F9FAFC',
+//   'zircon': '#DDE9EB',
+//   'quartz': '#D1D1DA',
+//   'hawkes': '#DADDE6',
+//   'fiord': '#4B545C',
+//   'almond': '#EDDDCE',
+//   'curious': '#317EC6',

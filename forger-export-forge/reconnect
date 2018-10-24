@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "# Laravel Forge" | tee -a /home/forge/.ssh/authorized_keys > /dev/null
+echo $1 | tee -a /home/forge/.ssh/authorized_keys > /dev/null
+
+echo "# Laravel Forge" | tee -a /root/.ssh/authorized_keys > /dev/null
+echo $1 | tee -a /root/.ssh/authorized_keys > /dev/null
+
+echo "Keys Added!"

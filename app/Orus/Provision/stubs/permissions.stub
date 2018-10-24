@@ -1,0 +1,19 @@
+# Add The Reconnect Script Into cepheus Directory
+
+cat > /home/cepheus/.cepheus/reconnect << EOF
+#!/usr/bin/env bash
+
+echo "# Cepheus" | tee -a /home/cepheus/.ssh/authorized_keys > /dev/null
+echo \$1 | tee -a /home/cepheus/.ssh/authorized_keys > /dev/null
+
+echo "# Cepheus" | tee -a /root/.ssh/authorized_keys > /dev/null
+echo \$1 | tee -a /root/.ssh/authorized_keys > /dev/null
+
+echo "Keys Added!"
+EOF
+
+# Fix Home Directory Permissions
+
+chown -R cepheus:cepheus /home/cepheus
+chmod -R 755 /home/cepheus
+chmod 700 /home/cepheus/.ssh/id_rsa

@@ -1,0 +1,28 @@
+#
+# REQUIRES:
+#   - server (the cepheus server instance)
+#   - db_password (random password for mysql root user)
+#
+
+# Set The Automated Root Password
+
+export DEBIAN_FRONTEND=noninteractive
+
+debconf-set-selections <<< "mysql-community-server mysql-community-server/data-dir select ''"
+debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password {{DB_ROOT_PASSWORD}}"
+debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password {{DB_ROOT_PASSWORD}}"
+
+# Install MySQL
+
+apt-get install -y mysql-server
+
+# Configure Password Expiration
+
+echo "default_password_lifetime = 0" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# Configure Access Permissions For Root & Forge Users
+
+sed -i '/^bind-address/s/bind-address.*=.*/bind-address = */' /etc/mysql/mysql.conf.d/mysqld.cnf
+
+mysql --user="root" --password="{{DB_ROOT_PASSWORD}}" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '{{DB_ROOT_PASSWORD}}';"
+service mysql restart

@@ -1,0 +1,34 @@
+# Disable Password Authentication Over SSH
+sed -i "/PasswordAuthentication yes/d" /etc/ssh/sshd_config
+echo "" | tee -a /etc/ssh/sshd_config
+echo "# Disable Password Authentication" | sudo tee -a /etc/ssh/sshd_config
+echo "PasswordAuthentication no" | sudo tee -a /etc/ssh/sshd_config
+
+# Updating the ssh port
+sed -i "/Port 22/d" /etc/ssh/sshd_config
+echo "" | tee -a /etc/ssh/sshd_config
+echo "Port {{SSH_PORT}}" | sudo tee -a /etc/ssh/sshd_config
+
+# Restart SSH
+ssh-keygen -A
+service ssh restart
+
+cat > /root/.ssh/authorized_keys << EOF
+# Cepheus public key
+{{SSH_PUB_KEY}}
+
+EOF
+
+
+cp /root/.ssh/authorized_keys /home/cepheus/.ssh/authorized_keys
+
+# Create The Server SSH Key
+
+ssh-keygen -f /home/cepheus/.ssh/id_rsa -t rsa -N ''
+
+# Copy Source Control Public Keys Into Known Hosts File
+
+ssh-keyscan -H github.com >> /home/cepheus/.ssh/known_hosts
+ssh-keyscan -H bitbucket.org >> /home/cepheus/.ssh/known_hosts
+ssh-keyscan -H gitlab.orus.ci >> /home/cepheus/.ssh/known_hosts
+

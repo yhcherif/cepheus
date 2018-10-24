@@ -1,0 +1,1 @@
+ssh-keyscan -t rsa -H gitlab.com >> /home/forge/.ssh/known_hosts
