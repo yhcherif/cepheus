@@ -21,7 +21,7 @@ Route::post('/servers', 'ServersController@store')->name('servers.store')->middl
 Route::get('/servers/{server}/sites', 'ServersController@sites')->name('servers.sites');
 
 Route::get('/servers/{server}/vps', 'ProvisioningController@create')->name('provisioning.create');
-Route::get('/provisioning/callback', 'ProvisioningController@store')->name('provisioning.store');
+Route::post('/provisioning/callback', 'ProvisioningController@store')->name('provisioning.store');
 
 Auth::routes();
 

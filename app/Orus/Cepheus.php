@@ -176,7 +176,7 @@ class Cepheus {
             'script' => $this->script,
         ]);
 
-        $this->script .= "\n# notify cepheus\nhttp ". route('provisioning.store', [
+        $this->script .= "\n# notify cepheus\ncurl --insecure --data \"event_id=". $event->id ."&server_id=". $this->server->id ."&sudo_password=KuXxrWIPIeFhwLnXA5fe&db_password=VxXEzoyNyvre3ssaEa9j&recipe_id=\" ". route('provisioning.store', [
             'server_id' => $this->server->id,
             "event_id" => $event->id,
         ]) . "\n";
